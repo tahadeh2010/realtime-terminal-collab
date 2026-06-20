@@ -72,6 +72,7 @@ The project follows a modular monolithic architecture.
 
 ## Project Structure
 
+```
 .
 ├── cmd/
 ├── internal/
@@ -87,7 +88,7 @@ The project follows a modular monolithic architecture.
 │ └── roadmap.md
 │
 └── README.md
-
+```
 
 ## Documentation
 

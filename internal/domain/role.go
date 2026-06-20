@@ -3,6 +3,6 @@ package domain
 type Role int
 
 const (
-	RoleHost   Role = iota
+	RoleHost Role = iota
 	RoleViewer
 )
