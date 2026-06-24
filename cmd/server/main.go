@@ -4,11 +4,18 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/tahadeh2010/realtime-terminal-collab/internal/application"
+	"github.com/tahadeh2010/realtime-terminal-collab/internal/infrastructure"
 	"github.com/tahadeh2010/realtime-terminal-collab/internal/transport"
 )
 
 func main() {
-	http.HandleFunc("/ws", transport.HandleWebSocket)
+	store := infrastructure.NewMemoryStore()
+	sm := application.NewSessionManager(store)
+	cm := application.NewConnectionManager()
+
+	server := transport.NewServer(sm, cm)
+	http.HandleFunc("/ws", server.HandleWebSocket)
 
 	log.Println("server starting on :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
