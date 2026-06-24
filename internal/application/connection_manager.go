@@ -1,6 +1,7 @@
 package application
 
 import (
+	"log"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -45,4 +46,16 @@ func (cm *ConnectionManager) GetConnection(id string) (*Connection, bool) {
 
 	conn, ok := cm.connections[id]
 	return conn, ok
+}
+
+func (cm *ConnectionManager) Broadcast(message []byte) {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	for id, c := range cm.connections {
+		if err := c.Conn.WriteMessage(websocket.TextMessage, message); err != nil {
+			log.Printf("broadcast error to %s: %v", id, err)
+			c.Conn.Close()
+		}
+	}
 }
