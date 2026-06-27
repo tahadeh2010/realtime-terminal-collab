@@ -14,6 +14,10 @@ func NewPTYManager() *PTYManager {
 	return &PTYManager{}
 }
 
+func (pm *PTYManager) Stop(inst *PTYInstance) error {
+	return inst.Close()
+}
+
 func (pm *PTYManager) Spawn() (*PTYInstance, error) {
 	cmd := exec.Command("bash")
 	cmd.Env = append(cmd.Env, "TERM=xterm")
