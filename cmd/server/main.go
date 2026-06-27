@@ -17,6 +17,9 @@ func main() {
 	server := transport.NewServer(sm, cm)
 	http.HandleFunc("/ws", server.HandleWebSocket)
 
+	sessionHandler := transport.NewSessionHandler(sm)
+	http.HandleFunc("/session", sessionHandler.CreateSession)
+
 	log.Println("server starting on :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatalf("server error: %v", err)
