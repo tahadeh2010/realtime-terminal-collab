@@ -229,6 +229,24 @@ TASK-011
 
 ---
 
+## TASK-012.5 - Create Session HTTP API
+
+Description:
+
+Expose an HTTP endpoint to create a new session.
+
+Acceptance Criteria:
+
+* POST /session
+* Calls SessionManager.CreateSession()
+* Returns JSON
+* Returns HTTP 201
+* Proper error handling
+
+Dependencies:
+
+TASK-005
+
 ## TASK-013 - Stream PTY Output
 
 Description:
