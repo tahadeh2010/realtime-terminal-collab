@@ -17,3 +17,5 @@ dist/
 
 # coverage
 coverage.out
+
+.mimocode/
