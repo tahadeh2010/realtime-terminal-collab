@@ -6,19 +6,22 @@ import (
 	"os/exec"
 
 	"github.com/creack/pty"
+	"github.com/tahadeh2010/realtime-terminal-collab/internal/application"
 )
 
 type PTYManager struct{}
+
+var _ application.PTYProvider = (*PTYManager)(nil)
 
 func NewPTYManager() *PTYManager {
 	return &PTYManager{}
 }
 
-func (pm *PTYManager) Stop(inst *PTYInstance) error {
+func (pm *PTYManager) Stop(inst application.PTYInstance) error {
 	return inst.Close()
 }
 
-func (pm *PTYManager) Spawn() (*PTYInstance, error) {
+func (pm *PTYManager) Spawn() (application.PTYInstance, error) {
 	cmd := exec.Command("bash")
 	cmd.Env = append(cmd.Env, "TERM=xterm")
 

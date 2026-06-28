@@ -11,8 +11,12 @@ import (
 
 func main() {
 	store := infrastructure.NewMemoryStore()
-	sm := application.NewSessionManager(store)
+	ptyManager := infrastructure.NewPTYManager()
+	sm := application.NewSessionManager(store, ptyManager)
 	cm := application.NewConnectionManager()
+
+	ptyStreamer := transport.NewPTYStreamer(cm)
+	go ptyStreamer.WatchSessions(sm)
 
 	server := transport.NewServer(sm, cm)
 	http.HandleFunc("/ws", server.HandleWebSocket)

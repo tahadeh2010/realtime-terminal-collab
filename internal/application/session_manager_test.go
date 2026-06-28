@@ -36,8 +36,30 @@ func (m *mockStore) Delete(id string) error {
 	return nil
 }
 
+type mockPTY struct {
+	output chan []byte
+}
+
+func newMockPTY() *mockPTY {
+	return &mockPTY{output: make(chan []byte, 1)}
+}
+
+func (m *mockPTY) Write(data []byte) error { return nil }
+func (m *mockPTY) Output() <-chan []byte    { return m.output }
+func (m *mockPTY) Close() error            { return nil }
+
+type mockPTYProvider struct{}
+
+func (m *mockPTYProvider) Spawn() (PTYInstance, error) {
+	return newMockPTY(), nil
+}
+
+func (m *mockPTYProvider) Stop(inst PTYInstance) error {
+	return inst.Close()
+}
+
 func TestCreateSession(t *testing.T) {
-	manager := NewSessionManager(newMockStore())
+	manager := NewSessionManager(newMockStore(), &mockPTYProvider{})
 
 	session, err := manager.CreateSession("host-1")
 	if err != nil {
@@ -58,7 +80,7 @@ func TestCreateSession(t *testing.T) {
 }
 
 func TestGetSession(t *testing.T) {
-	manager := NewSessionManager(newMockStore())
+	manager := NewSessionManager(newMockStore(), &mockPTYProvider{})
 
 	created, err := manager.CreateSession("host-1")
 	if err != nil {
@@ -76,7 +98,7 @@ func TestGetSession(t *testing.T) {
 }
 
 func TestGetSessionNotFound(t *testing.T) {
-	manager := NewSessionManager(newMockStore())
+	manager := NewSessionManager(newMockStore(), &mockPTYProvider{})
 
 	_, err := manager.GetSession("nonexistent")
 	if err == nil {
@@ -85,7 +107,7 @@ func TestGetSessionNotFound(t *testing.T) {
 }
 
 func TestDeleteSession(t *testing.T) {
-	manager := NewSessionManager(newMockStore())
+	manager := NewSessionManager(newMockStore(), &mockPTYProvider{})
 
 	created, err := manager.CreateSession("host-1")
 	if err != nil {
@@ -104,7 +126,7 @@ func TestDeleteSession(t *testing.T) {
 }
 
 func TestDeleteSessionNotFound(t *testing.T) {
-	manager := NewSessionManager(newMockStore())
+	manager := NewSessionManager(newMockStore(), &mockPTYProvider{})
 
 	err := manager.DeleteSession("nonexistent")
 	if err == nil {
