@@ -1,0 +1,12 @@
+{
+  "name": "rtc-frontend",
+  "version": "1.0.0",
+  "description": "Realtime Terminal Collaboration Frontend",
+  "scripts": {
+    "start": "echo 'Frontend ready'",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
