@@ -32,19 +32,46 @@
             margin-bottom: 1rem;
             color: #888;
         }
-        #status {
-            padding: 1rem;
+        .join-form {
+            margin-top: 2rem;
+            padding: 1.5rem;
             background: #2a2a2a;
             border-radius: 8px;
-            margin-top: 1rem;
+        }
+        .join-form input {
+            padding: 0.75rem;
+            margin-right: 0.5rem;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-family: monospace;
+            width: 300px;
+        }
+        .join-form button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .join-form button:hover {
+            background: #45a049;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Realtime Terminal Collaboration</h1>
-        <p>Frontend skeleton ready</p>
-        <div id="status">Status: Loaded</div>
+        <p>Join an existing session or create a new one</p>
+        <div class="join-form">
+            <form id="joinForm">
+                <input type="text" id="sessionIdInput" placeholder="Enter Session ID" required>
+                <button type="submit">Join Session</button>
+            </form>
+        </div>
     </div>
     <script src="src/app.js"></script>
 </body>
