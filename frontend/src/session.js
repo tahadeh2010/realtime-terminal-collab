@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (sessionId) {
         sessionIdElement.textContent = sessionId;
+        const terminal = new Terminal('terminal');
+        terminal.connect(sessionId);
     } else {
         sessionIdElement.textContent = 'No session ID provided';
     }

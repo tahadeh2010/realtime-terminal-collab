@@ -41,6 +41,20 @@
         .session-id span {
             color: #888;
         }
+        #terminal {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +65,8 @@
             <span id="sessionId">Loading...</span>
         </div>
     </div>
+    <div id="terminal"></div>
+    <script src="src/terminal.js"></script>
     <script src="src/session.js"></script>
 </body>
 </html>
