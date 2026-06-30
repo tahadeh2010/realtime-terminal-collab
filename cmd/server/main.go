@@ -24,8 +24,8 @@ func main() {
 	sessionHandler := transport.NewSessionHandler(sm)
 	http.HandleFunc("/session", sessionHandler.CreateSession)
 
-	log.Println("server starting on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("server starting on :5000")
+	if err := http.ListenAndServe(":5000", nil); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
 }
