@@ -11,7 +11,8 @@ import (
 
 func main() {
 	store := infrastructure.NewMemoryStore()
-	ptyManager := infrastructure.NewPTYManager()
+	shellFinder := infrastructure.NewShellFinder()
+	ptyManager := infrastructure.NewPTYManager(shellFinder)
 	sm := application.NewSessionManager(store, ptyManager)
 	cm := application.NewConnectionManager()
 

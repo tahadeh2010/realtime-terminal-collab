@@ -1,13 +1,13 @@
-//go:build !windows
+//go:build windows
 
 package infrastructure
 
 import (
+	"fmt"
 	"io"
 	"log"
-	"os/exec"
 
-	"github.com/creack/pty"
+	"github.com/UserExistsError/conpty"
 	"github.com/tahadeh2010/realtime-terminal-collab/internal/application"
 )
 
@@ -26,29 +26,48 @@ func (pm *PTYManager) Stop(inst application.PTYInstance) error {
 }
 
 func (pm *PTYManager) Spawn() (application.PTYInstance, error) {
+	if !conpty.IsConPtyAvailable() {
+		return nil, fmt.Errorf("conpty is not available on this version of Windows (requires Windows 10 1809+)")
+	}
+
 	shell, err := pm.shellFinder.FindShell()
 	if err != nil {
 		return nil, err
 	}
 
-	cmd := exec.Command(shell)
-	cmd.Env = append(cmd.Env, "TERM=xterm")
-
-	ptmx, err := pty.Start(cmd)
+	cpty, err := conpty.Start(shell)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to start conpty: %w", err)
 	}
 
 	instance := &PTYInstance{
-		cmd:    cmd,
-		pty:    ptmx,
-		output: make(chan []byte, 256),
-		done:   make(chan struct{}),
+		cpty:    cpty,
+		output:  make(chan []byte, 256),
+		done:    make(chan struct{}),
 	}
 
 	go instance.readLoop()
 
 	return instance, nil
+}
+
+type PTYInstance struct {
+	cpty    *conpty.ConPty
+	output  chan []byte
+	done    chan struct{}
+}
+
+func (p *PTYInstance) Write(data []byte) error {
+	_, err := p.cpty.Write(data)
+	return err
+}
+
+func (p *PTYInstance) Output() <-chan []byte {
+	return p.output
+}
+
+func (p *PTYInstance) Close() error {
+	return p.cpty.Close()
 }
 
 func (p *PTYInstance) readLoop() {
@@ -57,7 +76,7 @@ func (p *PTYInstance) readLoop() {
 
 	buf := make([]byte, 4096)
 	for {
-		n, err := p.pty.Read(buf)
+		n, err := p.cpty.Read(buf)
 		if err != nil {
 			if err != io.EOF {
 				log.Printf("pty read error: %v", err)
